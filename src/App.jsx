@@ -1,6 +1,4 @@
 import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
 
 function App() {
@@ -8,7 +6,9 @@ function App() {
 
   return (
     <>
-      <h1>Welcome to KS Quiz game</h1>
+      <h1 className="text-3xl font-bold underline text-blue-500 justify-self-center mt-100">
+        Ive set up my tailwind!
+      </h1>
     </>
   );
 }
