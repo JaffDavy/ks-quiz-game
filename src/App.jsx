@@ -1,15 +1,16 @@
 import { useState } from "react";
 import "./App.css";
+import { useQuizStore } from "./store";
 
 function App() {
   const [count, setCount] = useState(0);
+  const store = useQuizStore();
 
   return (
-    <>
-      <h1 className="text-3xl font-bold underline text-blue-500 justify-self-center mt-100">
-        Ive set up my tailwind!
-      </h1>
-    </>
+    <div className="p-10 text-white bg-gray-900 min-h-screen">
+      <h1>Quiz App Debugger</h1>
+      <p>Screen: {store.screen}</p>
+    </div>
   );
 }
 
