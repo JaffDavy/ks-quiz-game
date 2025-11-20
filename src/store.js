@@ -52,6 +52,55 @@ export const useQuizStore = create((set, get) => ({
       set({ loading: false });
     }
   },
+
+  chooseAnswer: (chosen) => {
+    const { questions, currentIndex, answers } = get();
+    const q = questions[currentIndex];
+    const correct = q.correctAnswer === chosen;
+
+    set({
+      answers: [
+        ...answers,
+        {
+          question: q.question,
+          correctAnswer: q.correctAnswer,
+          chosenAnswer: chosen,
+          correct,
+        },
+      ],
+    });
+
+    const next = currentIndex + 1;
+    if (next >= questions.length) set({ screen: "results" });
+    else set({ currentIndex: next, timer: 10 });
+  },
+
+  skipQuestion: () => {
+    const { questions, currentIndex, answers } = get();
+    const q = questions[currentIndex];
+
+    set({
+      answers: [
+        ...answers,
+        {
+          question: q.question,
+          correctAnswer: q.correctAnswer,
+          chosenAnswer: null,
+          correct: false,
+        },
+      ],
+    });
+
+    const next = currentIndex + 1;
+    if (next >= questions.length) set({ screen: "results" });
+    else set({ currentIndex: next, timer: 10 });
+  },
+
+  tickTimer: () => {
+    const { timer } = get();
+    if (timer <= 1) get().skipQuestion();
+    else set({ timer: timer - 1 });
+  },
 }));
 
 function shuffle(arr) {
