@@ -1,107 +1,122 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { getQuestionsByCategory } from "../src/services/quiz.services";
 
-export const useQuizStore = create((set, get) => ({
-  screen: "categories",
-  category: null,
-  questions: [],
-  currentIndex: 0,
-  answers: [],
-  loading: false,
-  timer: 10,
-
-  setScreen: (s) => set({ screen: s }),
-  setCategory: (cat) => set({ category: cat }),
-  reset: () =>
-    set({
-      screen: "categories",
+export const useQuizStore = create(
+  persist(
+    (set, get) => ({
       category: null,
       questions: [],
       currentIndex: 0,
       answers: [],
       loading: false,
       timer: 10,
+
+      reset: () =>
+        set({
+          category: null,
+          questions: [],
+          currentIndex: 0,
+          answers: [],
+          loading: false,
+          timer: 10,
+        }),
+
+      startQuiz: async (category) => {
+        set({
+          loading: true,
+          category,
+          answers: [],
+          currentIndex: 0,
+          timer: 10,
+        });
+
+        try {
+          const data = await getQuestionsByCategory(category);
+
+          const questions = data.map((q) => ({
+            id: q.id,
+            question: q.question.text,
+            choices: shuffle([q.correctAnswer, ...(q.incorrectAnswers ?? [])]),
+            correctAnswer: q.correctAnswer,
+          }));
+
+          set({
+            questions,
+            loading: false,
+            currentIndex: 0,
+            timer: 20,
+          });
+        } catch (e) {
+          console.error("Error fetching questions:", e);
+          set({ loading: false });
+        }
+      },
+
+      chooseAnswer: (chosen) => {
+        const { questions, currentIndex, answers } = get();
+        const q = questions[currentIndex];
+        const correct = q.correctAnswer === chosen;
+
+        set({
+          answers: [
+            ...answers,
+            {
+              question: q.question,
+              correctAnswer: q.correctAnswer,
+              chosenAnswer: chosen,
+              correct,
+            },
+          ],
+        });
+
+        const next = currentIndex + 1;
+        if (next < questions.length) {
+          set({ currentIndex: next, timer: 20 });
+        }
+      },
+
+      skipQuestion: () => {
+        const { questions, currentIndex, answers } = get();
+        const q = questions[currentIndex];
+
+        set({
+          answers: [
+            ...answers,
+            {
+              question: q.question,
+              correctAnswer: q.correctAnswer,
+              chosenAnswer: null,
+              correct: false,
+            },
+          ],
+        });
+
+        const next = currentIndex + 1;
+        if (next < questions.length) {
+          set({ currentIndex: next, timer: 20 });
+        }
+      },
+
+      tickTimer: () => {
+        const { timer, questions, answers } = get();
+
+        if (questions.length === 0) return;
+        if (answers.length >= questions.length) return;
+
+        if (timer <= 0) {
+          get().skipQuestion();
+        } else {
+          set({ timer: timer - 1 });
+        }
+      },
     }),
-
-  startQuiz: async (category) => {
-    set({ loading: true, category, answers: [], currentIndex: 0, timer: 10 });
-    try {
-      const res = await fetch(
-        `https://the-trivia-api.com/v2/questions?categories=${encodeURIComponent(
-          category
-        )}&limit=10`
-      );
-      if (!res.ok) throw new Error("Fetch failed");
-      const data = await res.json();
-
-      const questions = data.map((q) => ({
-        id: q.id,
-        question: q.question.text,
-        choices: shuffle([q.correctAnswer, ...(q.incorrectAnswers ?? [])]),
-        correctAnswer: q.correctAnswer,
-      }));
-
-      set({
-        questions,
-        loading: false,
-        screen: "quiz",
-        currentIndex: 0,
-        timer: 10,
-      });
-    } catch (e) {
-      console.error(e);
-      set({ loading: false });
+    {
+      name: "quiz-storage",
+      getStorage: () => localStorage,
     }
-  },
-
-  chooseAnswer: (chosen) => {
-    const { questions, currentIndex, answers } = get();
-    const q = questions[currentIndex];
-    const correct = q.correctAnswer === chosen;
-
-    set({
-      answers: [
-        ...answers,
-        {
-          question: q.question,
-          correctAnswer: q.correctAnswer,
-          chosenAnswer: chosen,
-          correct,
-        },
-      ],
-    });
-
-    const next = currentIndex + 1;
-    if (next >= questions.length) set({ screen: "results" });
-    else set({ currentIndex: next, timer: 10 });
-  },
-
-  skipQuestion: () => {
-    const { questions, currentIndex, answers } = get();
-    const q = questions[currentIndex];
-
-    set({
-      answers: [
-        ...answers,
-        {
-          question: q.question,
-          correctAnswer: q.correctAnswer,
-          chosenAnswer: null,
-          correct: false,
-        },
-      ],
-    });
-
-    const next = currentIndex + 1;
-    if (next >= questions.length) set({ screen: "results" });
-    else set({ currentIndex: next, timer: 10 });
-  },
-
-  tickTimer: () => {
-    const { timer } = get();
-    if (timer <= 1) get().skipQuestion();
-    else set({ timer: timer - 1 });
-  },
-}));
+  )
+);
 
 function shuffle(arr) {
   const a = arr.slice();
@@ -111,5 +126,3 @@ function shuffle(arr) {
   }
   return a;
 }
-
-window.store = useQuizStore;
