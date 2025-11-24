@@ -1,6 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuizStore } from "../store";
+import { Instructions } from "./instructions";
+import { QuizCategories } from "./quizCategory";
 
 export function Home() {
   const startQuiz = useQuizStore((state) => state.startQuiz);
@@ -41,51 +43,11 @@ export function Home() {
         </p>
       </div>
 
-      <div className="bg-gray-800/80 p-6 rounded-2xl border border-gray-700 shadow-inner w-full max-w-lg text-left transform transition-all hover:scale-[1.02]">
-        <h3 className="text-xl font-bold mb-4 text-blue-400 flex items-center gap-2">
-          📘 How to Play
-        </h3>
-        <ul className="space-y-3 text-gray-300">
-          <li className="flex items-start gap-3">
-            <span className="bg-gray-700 p-1 rounded text-sm">❓</span>
-            <span>
-              You will face <strong className="text-white">10 Questions</strong>{" "}
-              per round.
-            </span>
-          </li>
-          <li className="flex items-start gap-3">
-            <span className="bg-gray-700 p-1 rounded text-sm">⏳</span>
-            <span>
-              You have <strong className="text-white">20 seconds</strong> to
-              answer each one.
-            </span>
-          </li>
-          <li className="flex items-start gap-3">
-            <span className="bg-gray-700 p-1 rounded text-sm">🚀</span>
-            <span>Questions advance automatically. Good luck!</span>
-          </li>
-        </ul>
-      </div>
+      <Instructions />
 
       <div className="w-full h-px bg-gradient-to-r from-transparent via-gray-600 to-transparent"></div>
 
-      <div className="w-full">
-        <h2 className="text-2xl font-bold text-white mb-6">
-          Choose a Category
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
-          {categories.map((cat) => (
-            <button
-              key={cat.id}
-              onClick={() => handleStart(cat.id)}
-              className={`${cat.color} hover:brightness-110 relative overflow-hidden group text-white font-bold py-4 px-4 rounded-xl shadow-lg transition-all duration-300 transform hover:-translate-y-1 active:scale-95`}
-            >
-              <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-              {cat.label}
-            </button>
-          ))}
-        </div>
-      </div>
+      <QuizCategories categories={categories} onCategorySelect={handleStart} />
     </section>
   );
 }
