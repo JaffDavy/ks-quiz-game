@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Routes, Route, Navigate } from "react-router-dom"; // Import Routes
+import { Routes, Route, Navigate } from "react-router-dom";
 import { useQuizStore } from "./store";
 import { Home } from "./Components/home";
 import { Quiz } from "./Components/quiz";

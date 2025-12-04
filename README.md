@@ -1,16 +1,40 @@
-# React + Vite
+# Ks Quiz Game
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![Home](./public/frontend-view.png)
+![Results-page](./public/results-page.png)
 
-Currently, two official plugins are available:
+# About
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+This quiz game starts with you choosing a category of questions you will want to answer after that you will have 10 questions when you are dona answering you will be give your results and if you had some wrong you will be give the correct answers
 
-## React Compiler
+## Built With
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Javascript
+- React
+- Tailwind
+- Zustand
 
-## Expanding the ESLint configuration
+## Clone project
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- To get a local copy up and running follow these simple example steps.
+- Clone this repository with `https://git@github.com:JaffDavy/ks-quiz-game.git` using your terminal or command line.
+
+## Command line steps
+
+- $ git clone `$ git@github.com:JaffDavy/ks-quiz-game.git`
+
+## Start App
+
+- run `npm install`
+- run `npm start` in your command line
+
+## Live Site
+
+[Link](ks-quiz-game-git-development-jaffdavys-projects.vercel.app)
+
+## Author
+
+👤 **Jaff Davy-Arnold**
+
+- GitHub: [@JaffDavy](https://github.com/JaffDavy/)
+- LinkedIn: [Jaff Davy-Arnold](https://www.linkedin.com/in/jaff-davy-arnold-5ba749297/)
